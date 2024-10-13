@@ -1,0 +1,71 @@
+name: Pulse
+description: "A new Flutter project."
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.4.3 <4.0.0"
+
+dependencies:
+  qr_flutter: ^4.1.0
+  qr_code_scanner: ^1.0.1
+  # flutter_barcode_scanner: ^2.0.0
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  provider: ^6.1.2
+
+  cupertino_icons: ^1.0.6
+  firebase_auth:
+  firebase_database:
+  firebase_core: ^2.0.0
+  cloud_firestore: ^4.14.0
+  google_fonts: ^6.2.1
+  fluttertoast: ^8.2.8
+  flutter_svg: ^2.0.10+1
+  font_awesome_flutter: ^10.7.0
+  introduction_slider: ^2.0.1
+  timelines: ^0.1.0
+
+  shared_preferences: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: "^0.13.1"
+
+flutter:
+  generate: true
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/settings.json
+    - assets/images/english_flag.png
+    - assets/images/thai_flag.png
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/images/icon.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/images/icon.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/images/icon.png"
