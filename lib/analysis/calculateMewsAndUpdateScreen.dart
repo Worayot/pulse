@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 // Main class for the calculating MEWs page
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/services/patient_service.dart';
 import 'package:Pulse/services/mews_service.dart';
 import 'package:Pulse/functions/getLocoalizedString.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CalculateMEWsAndUpdateScreen extends StatefulWidget {
   final String name;
@@ -73,6 +75,7 @@ class _CalculateMEWsAndUpdateScreenState
     final size = MediaQuery.of(context).size;
 
     String description = S.of(context)!.textinputNum;
+    final uid = FirebaseAuth.instance.currentUser!.uid.toString();
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -90,12 +93,17 @@ class _CalculateMEWsAndUpdateScreenState
                   },
                   icon: Icon(FontAwesomeIcons.backward),
                 ),
-                Text(
-                  S.of(context)!.back,
-                  style: GoogleFonts.inter(
-                    textStyle: TextStyle(
-                      fontSize: size.width * 0.05,
-                      fontWeight: FontWeight.bold,
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    S.of(context)!.back,
+                    style: GoogleFonts.inter(
+                      textStyle: TextStyle(
+                        fontSize: size.width * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -118,6 +126,7 @@ class _CalculateMEWsAndUpdateScreenState
                           title: 'Conscious',
                           value: _consciousValue,
                           items: [
+                            S.of(context)!.none,
                             S.of(context)!.conscious,
                             S.of(context)!.alert,
                             S.of(context)!.verbalStimuli,
@@ -180,7 +189,8 @@ class _CalculateMEWsAndUpdateScreenState
                         _buildInputSection(
                           order: '6.',
                           icon: FontAwesomeIcons.maskVentilator,
-                          title: 'SpO2',
+                          title: '\t\t\t\t\t\t\t\t\t\tSpO2\n' +
+                              S.of(context)!.whileGivingOxygen,
                           controller: _spo2Controller,
                           color: const Color(0xff6D6D6D),
                         ),
@@ -197,35 +207,35 @@ class _CalculateMEWsAndUpdateScreenState
                     const SizedBox(height: 50),
                     ElevatedButton(
                       onPressed: () async {
-                        final double heartRate =
-                            double.tryParse(_pulseController.text) ?? 0.0;
-                        final double respiratoryRate =
-                            double.tryParse(_rrController.text) ?? 0.0;
-                        final double systolicBP =
-                            double.tryParse(_sysBpController.text) ?? 0.0;
-                        final double diastolicBP =
-                            double.tryParse(_diasBpController.text) ?? 0.0;
-                        final double temperature =
-                            double.tryParse(_tempController.text) ?? 0.0;
-                        final double oxygenSaturation =
-                            double.tryParse(_spo2Controller.text) ?? 0.0;
-                        final double urineOutput =
-                            double.tryParse(_urineController.text) ?? 0.0;
+                        final int? heartRate =
+                            int.tryParse(_pulseController.text) ?? null;
+                        final int? respiratoryRate =
+                            int.tryParse(_rrController.text) ?? null;
+                        final int? systolicBP =
+                            int.tryParse(_sysBpController.text) ?? null;
+                        final int? diastolicBP =
+                            int.tryParse(_diasBpController.text) ?? null;
+                        final double? temperature =
+                            double.tryParse(_tempController.text) ?? null;
+                        final int? oxygenSaturation =
+                            int.tryParse(_spo2Controller.text) ?? null;
+                        final int? urineOutput =
+                            int.tryParse(_urineController.text) ?? null;
                         final String levelOfConsciousness =
-                            _consciousValue ?? 'Conscious';
+                            _consciousValue ?? '-';
 
                         String consciousnessValue = getEnglishConsciousValue(
                             context, levelOfConsciousness);
 
                         int MEWs = calculateMEWS(
                           context: context,
-                          heartRate: heartRate,
-                          respiratoryRate: respiratoryRate,
-                          systolicBP: systolicBP,
-                          temperature: temperature,
+                          heartRateString: _pulseController.text,
+                          respiratoryRateString: _rrController.text,
+                          systolicBPString: _sysBpController.text,
+                          temperatureString: _tempController.text,
                           levelOfConsciousness: consciousnessValue,
-                          oxygenSaturation: oxygenSaturation,
-                          urineOutput: urineOutput,
+                          oxygenSaturationString: _spo2Controller.text,
+                          urineOutputString: _urineController.text,
                         ).last.toInt();
 
                         // Add the patient to the database after navigating
@@ -241,24 +251,19 @@ class _CalculateMEWsAndUpdateScreenState
                                 patientID: widget.patientID,
                                 inspection_time: DateTime.now());
 
-                            String bloodPressure =
-                                formatBloodPressure(systolicBP, diastolicBP);
+                            String bloodPressure = formatBloodPressure(
+                                systolicBP ?? null, diastolicBP ?? null);
 
                             MewsService.addMEWsToPatient(
                                 blood_pressure: bloodPressure,
                                 consciousness: consciousnessValue,
-                                heart_rate:
-                                    double.tryParse(_pulseController.text) ?? 0,
-                                mews_score:
-                                    double.tryParse(MEWs.toString()) ?? 0,
-                                oxygen_saturation:
-                                    double.tryParse(_spo2Controller.text) ?? 0,
-                                temperature:
-                                    double.tryParse(_tempController.text) ?? 0,
-                                urine:
-                                    double.tryParse(_urineController.text) ?? 0,
-                                respiratory_rate:
-                                    double.tryParse(_rrController.text) ?? 0,
+                                heart_rate: heartRate ?? null,
+                                mews_score: MEWs,
+                                oxygen_saturation: oxygenSaturation ?? null,
+                                temperature: temperature ?? null,
+                                urine: urineOutput ?? null,
+                                respiratory_rate: respiratoryRate ?? null,
+                                uid: uid,
                                 patient_id: widget.patientID);
 
                             Widget resultsPage;
@@ -291,6 +296,13 @@ class _CalculateMEWsAndUpdateScreenState
                             _patientService.setInspectionTime(
                                 widget.patientID, inspection_time);
 
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(S.of(context)!.calSuccess),
+                                duration: Duration(seconds: 1),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
                             // Navigate to the results page
                             Navigator.pushReplacement(
                               context,
@@ -363,10 +375,10 @@ class _CalculateMEWsAndUpdateScreenState
           child: TextField(
             controller: controller,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10),
-              hintText: '0',
+              hintText: '-',
             ),
           ),
         ),
@@ -422,7 +434,7 @@ class _CalculateMEWsAndUpdateScreenState
             onChanged: onChanged,
             hint: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(S.of(context)!.conscious),
+              child: Text('-'),
             ),
           ),
         ),
@@ -488,10 +500,10 @@ class _CalculateMEWsAndUpdateScreenState
               controller: sysController,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
-                hintText: '0',
+                hintText: '-',
               ),
             ),
           ),
@@ -512,10 +524,10 @@ class _CalculateMEWsAndUpdateScreenState
               controller: diasController,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
-                hintText: '0',
+                hintText: '-',
               ),
             ),
           ),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/authenticate/login.dart';
-import 'package:Pulse/screens/homeScreen.dart';
+import 'package:Pulse/screens/HomeScreen.dart';
 import 'package:Pulse/themes/color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Pulse/services/user_service.dart';

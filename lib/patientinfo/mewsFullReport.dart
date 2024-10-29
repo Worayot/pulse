@@ -8,6 +8,7 @@ import 'package:Pulse/models/headerRow.dart';
 import 'package:Pulse/themes/color.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/services/mews_service.dart';
+import 'package:intl/intl.dart';
 
 // In state of development
 class FullReport extends StatefulWidget {
@@ -59,8 +60,7 @@ class _FullReportState extends State<FullReport> {
               }
 
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(
-                    child: Text('No data available for this patient'));
+                return Center(child: Text(S.of(context)!.noDataAvail));
               }
 
               final mewsList = snapshot.data!;
@@ -81,7 +81,7 @@ class _FullReportState extends State<FullReport> {
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: SizedBox(
-                    width: 950,
+                    width: 1200, //1200
                     child: Table(
                       border: const TableBorder.symmetric(
                           inside: BorderSide(),
@@ -90,7 +90,7 @@ class _FullReportState extends State<FullReport> {
                       defaultVerticalAlignment:
                           TableCellVerticalAlignment.middle,
                       children: [
-                        buildTableHeadRow(9),
+                        buildTableHeadRow(11),
                         ...List.generate(
                           currentPage != int.parse(maxNumber)
                               ? length
@@ -107,18 +107,17 @@ class _FullReportState extends State<FullReport> {
                                 TableCell(
                                   child: Padding(
                                     padding: const EdgeInsets.all(8),
-                                    child: Text(mewsData['timestamp'] != null
-                                        ? mewsData['timestamp']
-                                                .toDate()
-                                                .toString()
-                                                .split(' ')[0] +
-                                            '\n' +
-                                            mewsData['timestamp']
-                                                .toDate()
-                                                .toString()
-                                                .split(' ')[1]
-                                                .split('.')[0]
-                                        : 'N/A'),
+                                    child: Text(
+                                      mewsData['timestamp'] != null
+                                          ? DateFormat('dd/MM/yyyy').format(
+                                                  mewsData['timestamp']
+                                                      .toDate()) +
+                                              '\n' +
+                                              DateFormat('HH:mm:ss').format(
+                                                  mewsData['timestamp']
+                                                      .toDate())
+                                          : 'N/A',
+                                    ),
                                   ),
                                 ),
                                 TableCell(
@@ -182,6 +181,24 @@ class _FullReportState extends State<FullReport> {
                                     child: Text(
                                         mewsData['mews_score']?.toString() ??
                                             'N/A'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: Text(
+                                        mewsData['note']?.toString() ?? 'N/A'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8),
+                                    child: SizedBox(
+                                      child: Container(
+                                          child: Text(mewsData['audit_by']
+                                                  ?.toString() ??
+                                              'N/A')),
+                                    ),
                                   ),
                                 ),
                               ],

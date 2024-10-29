@@ -27,13 +27,17 @@ class AboutApp extends StatelessWidget {
                     },
                     icon: Icon(FontAwesomeIcons.backward),
                   ),
-                  SizedBox(width: size.width * 0.02),
-                  Text(
-                    S.of(context)!.back,
-                    style: GoogleFonts.inter(
-                      textStyle: TextStyle(
-                        fontSize: size.width * 0.05,
-                        fontWeight: FontWeight.bold,
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context); // Same action as the IconButton
+                    },
+                    child: Text(
+                      S.of(context)!.back,
+                      style: GoogleFonts.inter(
+                        textStyle: TextStyle(
+                          fontSize: size.width * 0.05,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

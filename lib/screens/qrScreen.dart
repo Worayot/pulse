@@ -5,6 +5,8 @@ import 'package:Pulse/themes/components/header.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/services/patient_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 //! Not tested for swap feature
 
@@ -28,8 +30,48 @@ class _QrCodePageState extends State<QrCodePage> {
       body: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(16.0),
+            padding: EdgeInsets.only(left: 16.0, right: 16, top: 16),
             child: Header(size, true),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 16.0),
+            child: Row(children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(FontAwesomeIcons.backward),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.pop(context); // Same action as the IconButton
+                },
+                child: Text(
+                  S.of(context)!.back,
+                  style: GoogleFonts.inter(
+                    textStyle: TextStyle(
+                      fontSize: size.width * 0.05,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ]),
+          ),
+          SizedBox(height: size.height * 0.012),
+          Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                S.of(context)!.swapShift,
+                style: GoogleFonts.inter(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.left,
+              ),
+            ),
           ),
           SizedBox(height: size.height * 0.02),
           Expanded(

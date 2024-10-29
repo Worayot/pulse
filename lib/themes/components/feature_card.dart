@@ -19,9 +19,8 @@ class FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define fixed width and height for the card
-    double cardWidth = size.width * 0.35; // Adjust width as needed
-    double cardHeight = size.height * 0.26; // Adjust height as needed
+    double cardWidth = size.width * 0.35;
+    double cardHeight = size.height * 0.26;
 
     return Container(
       width: cardWidth,
@@ -60,48 +59,22 @@ class FeatureCard extends StatelessWidget {
               maxLines: 2, // Limit subtitle to 2 lines
             ),
           ),
-          // Align(
-          //   alignment: Alignment.center,
-          //   child: Text(
-          //     title,
-          //     style: GoogleFonts.inter(
-          //       fontSize: size.width * 0.047,
-          //       fontWeight: FontWeight.bold,
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          // ),
-          // Container(
-          //   width: double.infinity,
-          //   height: size.height * 0.07, // Example height, set as needed
-          //   child: Column(
-          //     mainAxisAlignment: MainAxisAlignment.center,
-          //     children: [
-          //       Text(
-          //         title,
-          //         textAlign: TextAlign.center,
-          //         style: GoogleFonts.inter(
-          //           fontSize: size.width * 0.047,
-          //           fontWeight: FontWeight.bold,
-          //           color: Colors.white,
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
           SizedBox(height: size.height * 0.005),
-          Expanded(
-            child: Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: size.width * 0.04,
-                color: Colors.white,
+          SizedBox(
+            width: size.width * 0.25,
+            child: Expanded(
+              child: Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  fontSize: size.width * 0.035,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2, // Limit subtitle to 2 lines
               ),
-              overflow: TextOverflow.ellipsis, // Handle overflow if necessary
-              maxLines: 4, // Limit subtitle to 2 lines
             ),
-          ),
+          )
         ],
       ),
     );

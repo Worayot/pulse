@@ -1,17 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-String getLocalizedGender(BuildContext context, String gender) {
-  if (gender == S.of(context)!.male || gender == 'male') {
-    String localizedMale = S.of(context)!.male;
-    return localizedMale;
-  } else if (gender == S.of(context)!.female || gender == 'female') {
-    String localizedFemale = S.of(context)!.female;
-    return localizedFemale;
-  }
-  return gender;
-}
-
 String getLocalizedConsciousValue(BuildContext context, String value) {
   if (value == "Conscious") {
     return S.of(context)!.conscious;
@@ -27,9 +16,23 @@ String getLocalizedConsciousValue(BuildContext context, String value) {
   return value;
 }
 
-String formatBloodPressure(double systolicBP, double diastolicBP) {
-  String sBp = systolicBP == 0 ? '0' : systolicBP.toString();
-  String dBp = diastolicBP == 0 ? '0' : diastolicBP.toString();
+String formatBloodPressure(int? systolicBP, int? diastolicBP) {
+  String sBp = '';
+  String dBp = '';
+
+  if (systolicBP == null) {
+    sBp = '-';
+  } else {
+    systolicBP == 0 ? '0' : systolicBP.toString();
+    sBp = systolicBP.toString();
+  }
+
+  if (diastolicBP == null) {
+    dBp = '-';
+  } else {
+    diastolicBP == 0 ? '0' : diastolicBP.toString();
+    dBp = diastolicBP.toString();
+  }
   return '$sBp/$dBp';
 }
 

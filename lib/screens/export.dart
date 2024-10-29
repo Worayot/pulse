@@ -9,19 +9,17 @@ import 'package:Pulse/themes/components/header.dart';
 import 'package:Pulse/themes/components/searchbarwithfilter.dart'; // Replace this with your FilteringSearchBar import
 import 'package:Pulse/services/patient_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';
 
-class Patientlistpage extends StatefulWidget {
-  // รายชื่อผู้ป่วยในฐานข้อมูล
-  const Patientlistpage({super.key});
+class ExportPage extends StatefulWidget {
+  const ExportPage({super.key});
 
   @override
-  State<Patientlistpage> createState() => _PatientlistpageState();
+  State<ExportPage> createState() => _ExportPageState();
 }
 
-class _PatientlistpageState extends State<Patientlistpage> {
+class _ExportPageState extends State<ExportPage> {
   final PatientService patientService = PatientService();
-  String _searchQuery = ''; // This is the search query state
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +63,7 @@ class _PatientlistpageState extends State<Patientlistpage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      S.of(context)!.observerList,
+                      S.of(context)!.exportData,
                       style: GoogleFonts.inter(
                         fontSize: size.width * 0.05,
                         fontWeight: FontWeight.bold,
@@ -121,9 +119,8 @@ class _PatientlistpageState extends State<Patientlistpage> {
                             Map<String, dynamic> data =
                                 document.data() as Map<String, dynamic>;
                             String patientText =
-                                '${data['name']} ${data['lastname']}';
-                            String patientDescription =
-                                '${S.of(context)!.textBedNum}: ${data['bed_number']}\n${DateFormat('dd/MM/yyyy hh:mm:ss').format((data['timestamp'] as Timestamp).toDate())}';
+                                '${data['name']} ${data['lastname']}\n${S.of(context)!.textBedNum}: ${data['bed_number']}';
+
                             return ListTile(
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,56 +132,34 @@ class _PatientlistpageState extends State<Patientlistpage> {
                                         child: Align(
                                           alignment: Alignment.centerLeft,
                                           child: TextButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        CalculateMEWsAndUpdateScreen(
-                                                            name: data['name'],
-                                                            surname: data[
-                                                                'lastname'],
-                                                            gender:
-                                                                data['gender'],
-                                                            hn: int.parse(data[
-                                                                'hospital_number']),
-                                                            bedNum: int.parse(data[
-                                                                'bed_number']),
-                                                            ward: data[
-                                                                'ward_number'],
-                                                            patientID:
-                                                                patientID),
-                                                  ),
-                                                );
-                                              },
-                                              child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Text(
-                                                        patientText,
-                                                        style: TextStyle(
-                                                            fontSize: 16,
-                                                            color:
-                                                                Colors.black),
-                                                      ),
-                                                    ),
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Text(
-                                                        patientDescription,
-                                                        style: TextStyle(
-                                                            fontSize: 10,
-                                                            color: const Color
-                                                                .fromARGB(
-                                                                255, 0, 0, 0)),
-                                                      ),
-                                                    )
-                                                  ])),
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CalculateMEWsAndUpdateScreen(
+                                                          name: data['name'],
+                                                          surname:
+                                                              data['lastname'],
+                                                          gender:
+                                                              data['gender'],
+                                                          hn: int.parse(data[
+                                                              'hospital_number']),
+                                                          bedNum: int.parse(data[
+                                                              'bed_number']),
+                                                          ward: data[
+                                                              'ward_number'],
+                                                          patientID: patientID),
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              patientText,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       Spacer(),

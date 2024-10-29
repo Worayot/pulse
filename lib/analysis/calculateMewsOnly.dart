@@ -63,12 +63,17 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
                   },
                   icon: Icon(FontAwesomeIcons.backward),
                 ),
-                Text(
-                  S.of(context)!.back,
-                  style: GoogleFonts.inter(
-                    textStyle: TextStyle(
-                      fontSize: size.width * 0.05,
-                      fontWeight: FontWeight.bold,
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context); // Same action as the IconButton
+                  },
+                  child: Text(
+                    S.of(context)!.back,
+                    style: GoogleFonts.inter(
+                      textStyle: TextStyle(
+                        fontSize: size.width * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -91,6 +96,7 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
                           title: 'Conscious',
                           value: _consciousValue,
                           items: [
+                            S.of(context)!.none,
                             S.of(context)!.conscious,
                             S.of(context)!.alert,
                             S.of(context)!.verbalStimuli,
@@ -153,7 +159,8 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
                         _buildInputSection(
                           order: '6.',
                           icon: FontAwesomeIcons.maskVentilator,
-                          title: 'SpO2',
+                          title: '\t\t\t\t\t\t\t\t\t\tSpO2\n' +
+                              S.of(context)!.whileGivingOxygen,
                           controller: _spo2Controller,
                           color: const Color(0xff6D6D6D),
                         ),
@@ -170,34 +177,20 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
                     const SizedBox(height: 50),
                     ElevatedButton(
                       onPressed: () {
-                        final double heartRate =
-                            double.tryParse(_pulseController.text) ?? 0.0;
-                        final double respiratoryRate =
-                            double.tryParse(_rrController.text) ?? 0.0;
-                        final double systolicBP =
-                            double.tryParse(_sysBpController.text) ?? 0.0;
-                        // final double diastolicBP =
-                        //     double.tryParse(_diasBpController.text) ?? 0.0;
-                        final double temperature =
-                            double.tryParse(_tempController.text) ?? 0.0;
-                        final double oxygenSaturation =
-                            double.tryParse(_spo2Controller.text) ?? 0.0;
-                        final double urineOutput =
-                            double.tryParse(_urineController.text) ?? 0.0;
-                        final String levelOfConsciousness =
-                            _consciousValue ?? 'C'; // Default to 'C' if null
+                        final String? levelOfConsciousness =
+                            _consciousValue ?? '-';
 
                         // Add these values to the database
 
                         int MEWs = calculateMEWS(
                           context: context,
-                          heartRate: heartRate,
-                          respiratoryRate: respiratoryRate,
-                          systolicBP: systolicBP,
-                          temperature: temperature,
+                          heartRateString: _pulseController.text,
+                          respiratoryRateString: _rrController.text,
+                          systolicBPString: _sysBpController.text,
+                          temperatureString: _tempController.text,
                           levelOfConsciousness: levelOfConsciousness,
-                          oxygenSaturation: oxygenSaturation,
-                          urineOutput: urineOutput,
+                          oxygenSaturationString: _spo2Controller.text,
+                          urineOutputString: _urineController.text,
                         ).last.toInt();
 
                         if (MEWs <= 1) {
@@ -302,10 +295,10 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
           child: TextField(
             controller: controller,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10),
-              hintText: '0',
+              hintText: '-',
             ),
           ),
         ),
@@ -361,7 +354,7 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
             onChanged: onChanged,
             hint: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(S.of(context)!.conscious),
+              child: Text('-'),
             ),
           ),
         ),
@@ -427,10 +420,10 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
               controller: sysController,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
-                hintText: '0',
+                hintText: '-',
               ),
             ),
           ),
@@ -451,10 +444,10 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
               controller: diasController,
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10),
-                hintText: '0',
+                hintText: '-',
               ),
             ),
           ),

@@ -47,12 +47,17 @@ class _MEWsScreenPageState extends State<MEWsScreenPage> {
                       },
                       icon: Icon(FontAwesomeIcons.backward),
                     ),
-                    Text(
-                      S.of(context)!.back,
-                      style: GoogleFonts.inter(
-                        textStyle: TextStyle(
-                          fontSize: size.width * 0.05,
-                          fontWeight: FontWeight.bold,
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context); // Same action as the IconButton
+                      },
+                      child: Text(
+                        S.of(context)!.back,
+                        style: GoogleFonts.inter(
+                          textStyle: TextStyle(
+                            fontSize: size.width * 0.05,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -78,7 +83,7 @@ class _MEWsScreenPageState extends State<MEWsScreenPage> {
               slivers: [
                 SliverFillRemaining(
                   child: Container(
-                    height: size.height * 0.5, //Does not work
+                    height: size.height * 0.5, // Does not work
                     child: StreamBuilder<List<Map<String, dynamic>>>(
                       stream: patientService.getPinhandStream(uid),
                       builder: (context, snapshot) {
@@ -193,6 +198,9 @@ class _MEWsScreenPageState extends State<MEWsScreenPage> {
                           } else {
                             return Column(
                               children: [
+                                SizedBox(
+                                  height: size.height * 0.02,
+                                ),
                                 Expanded(
                                   child: ListView.builder(
                                     itemCount: patients.length,
@@ -210,8 +218,9 @@ class _MEWsScreenPageState extends State<MEWsScreenPage> {
                                         DateTime time_data =
                                             patient['inspection_time'].toDate();
 
-                                        inspection_time = DateFormat('HH:mm:ss')
-                                            .format(time_data);
+                                        inspection_time =
+                                            DateFormat('dd/MM/yyyy HH:mm:ss')
+                                                .format(time_data);
                                         inspection_time_size = 20;
                                         if (time_data.isAfter(DateTime.now())) {
                                           time_color = Colors.black;
@@ -506,16 +515,14 @@ Widget patientInfoCard({
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        // UpdatePatientScreen(patientID: patientID),
-                        CalculateMEWsAndUpdateScreen(
-                            name: name,
-                            surname: lastname,
-                            gender: gender,
-                            hn: int.parse(hn),
-                            bedNum: int.parse(bed_number),
-                            ward: ward,
-                            patientID: patientID)));
+                    builder: (context) => CalculateMEWsAndUpdateScreen(
+                        name: name,
+                        surname: lastname,
+                        gender: gender,
+                        hn: int.parse(hn),
+                        bedNum: int.parse(bed_number),
+                        ward: ward,
+                        patientID: patientID)));
           },
           child: SizedBox(
             width: double.infinity,

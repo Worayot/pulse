@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:Pulse/analysis/updatePatientScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/resultsScreens/low.dart';
-import 'package:Pulse/screens/homeScreen.dart';
+import 'package:Pulse/screens/HomeScreen.dart';
 import 'package:Pulse/themes/components/header.dart';
 
 class LowResultPage extends StatelessWidget {
@@ -31,7 +31,7 @@ class LowResultPage extends StatelessWidget {
             Row(
               children: [
                 IconButton(
-                  icon: FaIcon(FontAwesomeIcons.backward),
+                  icon: FaIcon(FontAwesomeIcons.arrowLeft),
                   onPressed: () {
                     Navigator.push(
                       context,

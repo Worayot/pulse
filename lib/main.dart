@@ -8,7 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/authenticate/dataLoader.dart';
 import 'package:Pulse/authenticate/login.dart';
 import 'package:Pulse/screens/darkmode.dart';
-import 'package:Pulse/screens/homeScreen.dart';
+import 'package:Pulse/screens/HomeScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:Pulse/screens/setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';

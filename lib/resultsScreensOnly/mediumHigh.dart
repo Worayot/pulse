@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:Pulse/screens/homeScreen.dart';
+import 'package:Pulse/screens/HomeScreen.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/themes/components/header.dart';
 import 'package:Pulse/treatmentsOnly/MedHighResult.dart';
@@ -102,69 +102,69 @@ class MediumHighPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: size.height * 0.02),
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          S.of(context)!.textnursing,
-                          style: GoogleFonts.inter(
-                            textStyle: TextStyle(
-                              fontSize: size.width * 0.05,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: size.height * 0.01),
-                        ElevatedButton(
+                  SizedBox(height: size.height * 0.04),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        height: size.height * 0.07,
+                        width: size.width * 0.4,
+                        child: ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => MediumHighResultPage(
-                                        MEWs: MEWs,
-                                      )),
+                                builder: (context) =>
+                                    MediumHighResultPage(MEWs: MEWs),
+                              ),
                             );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xffe8a0bf),
                             textStyle: TextStyle(color: Colors.black),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
                           ),
                           child: Text(
-                            S.of(context)!.buttonclickHere,
+                            S.of(context)!.textnursing,
                             style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xffFFDEAC),
-                        ),
-                        onPressed: () {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
-                            (Route<dynamic> route) => false,
-                          );
-                        },
-                        child: Text(
-                          S.of(context)!.buttonbackToHome,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                      ),
+                      SizedBox(
+                        width: size.width * 0.03,
+                      ),
+                      SizedBox(
+                        height: size.height * 0.07,
+                        width: size.width * 0.4,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xffFFDEAC),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const HomeScreen()),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          child: Text(
+                            S.of(context)!.buttonbackToHome,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ],

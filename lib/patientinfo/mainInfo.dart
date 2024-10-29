@@ -99,6 +99,7 @@ class _MainInfoState extends State<MainInfo> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -106,23 +107,35 @@ class _MainInfoState extends State<MainInfo> {
           child: Column(
             children: [
               Header(size, true),
-              SizedBox(height: size.height * 0.027),
+              // SizedBox(height: size.height * 0.027),
               GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
                 },
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: size.width * 0.03),
+                  // margin: EdgeInsets.symmetric(horizontal: size.width * 0.03),
                   child: Row(
                     children: [
-                      FaIcon(FontAwesomeIcons.backward,
-                          size: size.width * 0.05),
-                      SizedBox(width: size.width * 0.02),
-                      Text(
-                        S.of(context)!.back,
-                        style: GoogleFonts.inter(
-                            fontSize: size.width * 0.05,
-                            fontWeight: FontWeight.bold),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(FontAwesomeIcons.backward),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(
+                              context); // Same action as the IconButton
+                        },
+                        child: Text(
+                          S.of(context)!.back,
+                          style: GoogleFonts.inter(
+                            textStyle: TextStyle(
+                              fontSize: size.width * 0.05,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -168,36 +181,58 @@ class _MainInfoState extends State<MainInfo> {
                         child: Column(
                           children: [
                             SizedBox(height: size.height * 0.02),
-                            PatientMewsDetail(
-                              name: _patientData!['name'] ?? 'N/A',
-                              lastName: _patientData!['lastname'] ?? 'N/A',
-                              gender: _patientData!['gender'] ?? 'N/A',
-                              bedNumber: _patientData!['bed_number'].toString(),
-                              hospitalNumber:
-                                  _patientData!['hospital_number'].toString(),
-                              wardNumber: _patientData!['ward_number'] ?? 'N/A',
-                              blood_pressure:
-                                  patientMEWsDetails!['blood_pressure'] ??
-                                      '0/0',
-                              consciousness:
-                                  patientMEWsDetails!['consciousness']
-                                      .toString(),
-                              heart_rate:
-                                  patientMEWsDetails!['heart_rate'].toString(),
-                              temperature:
-                                  patientMEWsDetails!['temperature'].toString(),
-                              oxygen_saturation:
-                                  patientMEWsDetails!['oxygen_saturation']
-                                      .toString(),
-                              respiratory_rate:
-                                  patientMEWsDetails!['respiratory_rate']
-                                      .toString(),
-                              urine: patientMEWsDetails!['urine'].toString(),
-                              mews_score:
-                                  patientMEWsDetails!['mews_score'].toString(),
-                              timestamp:
-                                  patientMEWsDetails!['timestamp'].toString(),
-                            )
+                            patientMEWsDetails!['respiratory_rate'] == ''
+                                ? Center(
+                                    child: Text(S.of(context)!.noDataAvail))
+                                : PatientMewsDetail(
+                                    name: _patientData?['name'] ?? 'N/A',
+                                    lastName:
+                                        _patientData?['lastname'] ?? 'N/A',
+                                    gender: _patientData?['gender'] ?? 'N/A',
+                                    bedNumber: _patientData?['bed_number']
+                                            ?.toString() ??
+                                        'N/A',
+                                    hospitalNumber:
+                                        _patientData?['hospital_number']
+                                                ?.toString() ??
+                                            'N/A',
+                                    wardNumber:
+                                        _patientData?['ward_number'] ?? 'N/A',
+                                    blood_pressure:
+                                        patientMEWsDetails?['blood_pressure'] ??
+                                            '0/0',
+                                    consciousness:
+                                        patientMEWsDetails?['consciousness']
+                                                ?.toString() ??
+                                            'N/A',
+                                    heart_rate:
+                                        patientMEWsDetails?['heart_rate']
+                                                ?.toString() ??
+                                            'N/A',
+                                    temperature:
+                                        patientMEWsDetails?['temperature']
+                                                ?.toString() ??
+                                            'N/A',
+                                    oxygen_saturation:
+                                        patientMEWsDetails?['oxygen_saturation']
+                                                ?.toString() ??
+                                            'N/A',
+                                    respiratory_rate:
+                                        patientMEWsDetails?['respiratory_rate']
+                                                ?.toString() ??
+                                            'N/A',
+                                    urine: patientMEWsDetails?['urine']
+                                            ?.toString() ??
+                                        'N/A',
+                                    mews_score:
+                                        patientMEWsDetails?['mews_score']
+                                                ?.toString() ??
+                                            'N/A',
+                                    timestamp: patientMEWsDetails?['timestamp']
+                                            ?.toString() ??
+                                        'N/A',
+                                    patientID: widget.patientID,
+                                  ),
                           ],
                         ),
                       ),

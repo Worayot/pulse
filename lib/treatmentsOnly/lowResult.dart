@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:Pulse/resultsScreensOnly/low.dart';
-import 'package:Pulse/screens/homeScreen.dart';
+import 'package:Pulse/screens/HomeScreen.dart';
 import 'package:Pulse/themes/components/header.dart';
 
 class LowResultPage extends StatelessWidget {

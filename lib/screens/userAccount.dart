@@ -21,16 +21,16 @@ class UserAccount extends StatefulWidget {
 class _SettingsUserPageState extends State<UserAccount> {
   Map<String, String> userDetails = {};
 
-  // final uid = FirebaseAuth.instance.currentUser!.uid.toString();
+  String email = '';
+  String nurseID = '';
 
   String name = '';
   String surname = '';
-  String email = '';
+  String contact = '';
+
   String newName = '';
   String newSurname = '';
   String newContact = '';
-  String nurseID = '';
-  String contact = '';
 
   @override
   void initState() {
@@ -68,12 +68,17 @@ class _SettingsUserPageState extends State<UserAccount> {
                   },
                   icon: Icon(FontAwesomeIcons.backward),
                 ),
-                Text(
-                  S.of(context)!.back,
-                  style: GoogleFonts.inter(
-                    textStyle: TextStyle(
-                      fontSize: size.width * 0.05,
-                      fontWeight: FontWeight.bold,
+                InkWell(
+                  onTap: () {
+                    Navigator.pop(context); // Same action as the IconButton
+                  },
+                  child: Text(
+                    S.of(context)!.back,
+                    style: GoogleFonts.inter(
+                      textStyle: TextStyle(
+                        fontSize: size.width * 0.05,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -299,19 +304,30 @@ class _SettingsUserPageState extends State<UserAccount> {
                 elevation: 0,
               ),
               onPressed: () async {
-                await _editUserDetails();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      S.of(context)!.success,
+                if (newName.isEmpty & newSurname.isEmpty & newContact.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        S.of(context)!.plsFillAtLeastOne,
+                      ),
+                      duration: const Duration(seconds: 2),
                     ),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => UserDataLoader()),
-                );
+                  );
+                } else {
+                  await _editUserDetails();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        S.of(context)!.success,
+                      ),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => UserDataLoader()),
+                  );
+                }
               },
               child: Text(
                 S.of(context)!.save,
@@ -328,26 +344,29 @@ class _SettingsUserPageState extends State<UserAccount> {
   }
 
   Future<void> _editUserDetails() async {
-    if (newName.isNotEmpty || newSurname.isNotEmpty || newContact.isNotEmpty) {
+    if (newName.trim().isNotEmpty ||
+        newSurname.trim().isNotEmpty ||
+        newContact.trim().isNotEmpty) {
       final success = await updateUserDetails(
-        newName: newName.isNotEmpty ? newName : name,
-        newSurname: newSurname.isNotEmpty ? newSurname : surname,
-        newContact: newContact.isNotEmpty ? newContact : contact,
+        newName: newName.trim().isEmpty ? name : newName.trim(),
+        newSurname: newSurname.trim().isEmpty ? surname : newSurname.trim(),
+        newContact: newContact.trim().isEmpty ? contact : newContact.trim(),
       );
+
       if (success) {
         String uid = FirebaseAuth.instance.currentUser!.uid.toString();
         UserService().updateProfile(
-            uid: uid,
-            name: newName,
-            lastname: newSurname,
-            contactInfo: newContact);
-        setState(
-          () {
-            name = newName.isNotEmpty ? newName : name;
-            surname = newSurname.isNotEmpty ? newSurname : surname;
-            contact = newContact.isNotEmpty ? newContact : contact;
-          },
+          uid: uid,
+          name: newName.trim().isEmpty ? name : newName.trim(),
+          lastname: newSurname.trim().isEmpty ? surname : newSurname.trim(),
+          contactInfo: newContact.trim().isEmpty ? contact : newContact.trim(),
         );
+
+        setState(() {
+          name = newName.trim().isEmpty ? name : newName.trim();
+          surname = newSurname.trim().isEmpty ? surname : newSurname.trim();
+          contact = newContact.trim().isEmpty ? contact : newContact.trim();
+        });
       }
     }
   }
@@ -367,26 +386,6 @@ class _SettingsUserPageState extends State<UserAccount> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Error'),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: Text(S.of(context)!.ok),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showSuccessDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(S.of(context)!.success),
           content: Text(message),
           actions: [
             TextButton(

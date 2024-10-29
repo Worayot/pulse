@@ -10,5 +10,6 @@ List<String> headerName = [
   "Urine",
   "RR",
   "MEWs",
-  // "Mangement"
+  "note",
+  "editor"
 ];

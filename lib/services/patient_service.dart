@@ -95,7 +95,6 @@ class PatientService {
     required String bed_number,
     required String hospital_number,
     required String ward_number,
-    // required String admission_number,
     required DateTime inspection_time,
   }) async {
     try {
