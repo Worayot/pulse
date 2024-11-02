@@ -15,9 +15,9 @@ Future<bool> addPatient(BuildContext context, String name, String surname,
         hospital_number: hn.toString(),
         bed_number: bedNum.toString(),
         ward_number: ward,
-        user_id: 'null',
+        user_id: [],
         color: 0,
-        inspection_time: DateTime.now());
+        inspection_time: null);
 
     // String docID = await _patientService.addPatientAndGetID(
     //     name: name,

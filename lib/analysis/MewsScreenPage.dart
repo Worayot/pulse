@@ -248,17 +248,17 @@ class _MEWsScreenPageState extends State<MEWsScreenPage> {
                                           setState(() {
                                             patients.removeAt(index);
                                           });
-                                          patientService.removeCareTaker(
+                                          patientService.removePinterest(
                                               patient['id'], uid);
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             SnackBar(
-                                              content: Text(
-                                                '${S.of(context)!.remove} ${patient['name']} ${patient['lastname']} ${S.of(context)!.fromYourCare}',
-                                              ),
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                            ),
+                                                content: Text(
+                                                  '${S.of(context)!.remove} ${patient['name']} ${patient['lastname']} ${S.of(context)!.fromYourCare}',
+                                                ),
+                                                duration:
+                                                    const Duration(seconds: 1),
+                                                backgroundColor: Colors.green),
                                           );
                                         },
                                         child: Column(

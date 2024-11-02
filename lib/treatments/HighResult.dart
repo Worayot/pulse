@@ -123,53 +123,6 @@ class HighResultPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text:
-                                      '${S.of(context)!.sentenceupdateScoreHere} ',
-                                  style: GoogleFonts.inter(
-                                    textStyle: TextStyle(
-                                      fontSize: size.width * 0.032,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: S.of(context)!.textButtonhere,
-                                  style: GoogleFonts.inter(
-                                    textStyle: TextStyle(
-                                      color: Colors.red,
-                                      fontSize: size.width * 0.032,
-                                      fontWeight: FontWeight.normal,
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Colors.red,
-                                    ),
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                UpdatePatientScreen(
-                                                  patientID: patientID,
-                                                  renderNextButton: true,
-                                                )),
-                                      );
-                                      // Navigate to Update Patient's Info Page
-                                    },
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
                       SizedBox(width: size.width * 0.02), // Adjust spacing
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(

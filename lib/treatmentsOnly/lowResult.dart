@@ -49,23 +49,7 @@ class LowResultPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: size.height * 0.02),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  S.of(context)!.descriptionscoreUpdate,
-                  textAlign: TextAlign.right,
-                  style: GoogleFonts.inter(
-                    textStyle: TextStyle(
-                      fontSize: size.width * 0.033,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: size.height * 0.02),
+            SizedBox(height: size.height * 0.006),
             Container(
               padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(

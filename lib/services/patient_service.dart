@@ -4,16 +4,42 @@ class PatientService {
   final CollectionReference patients =
       FirebaseFirestore.instance.collection('Patients');
 
-  Future<void> addPatient(
-      {required String name,
-      required String lastname,
-      required String gender,
-      required String bed_number,
-      required String hospital_number,
-      required String ward_number,
-      required String user_id,
-      required DateTime inspection_time,
-      required int color}) {
+  // Future<void> addPatient(
+  //     {required String name,
+  //     required String lastname,
+  //     required String gender,
+  //     required String bed_number,
+  //     required String hospital_number,
+  //     required String ward_number,
+  //     required String user_id,
+  //     required DateTime inspection_time,
+  //     required int color}) {
+  //   return patients.add({
+  //     'name': name,
+  //     'lastname': lastname,
+  //     'gender': gender,
+  //     'hospital_number': hospital_number,
+  //     'bed_number': bed_number,
+  //     'ward_number': ward_number,
+  //     'user_id': user_id,
+  //     'color': color,
+  //     'timestamp': Timestamp.now(),
+  //     'inspection_time': inspection_time
+  //   });
+  // }
+  Future<void> addPatient({
+    required String name,
+    required String lastname,
+    required String gender,
+    required String bed_number,
+    required String hospital_number,
+    required String ward_number,
+    required List<dynamic> user_id,
+    required int color,
+  }) {
+    DateTime now = DateTime.now();
+    DateTime inspectionTimePlusOneHour = now.add(Duration(hours: 1));
+
     return patients.add({
       'name': name,
       'lastname': lastname,
@@ -24,7 +50,7 @@ class PatientService {
       'user_id': user_id,
       'color': color,
       'timestamp': Timestamp.now(),
-      'inspection_time': inspection_time
+      'inspection_time': Timestamp.fromDate(inspectionTimePlusOneHour),
     });
   }
 
@@ -35,8 +61,8 @@ class PatientService {
       required String bed_number,
       required String hospital_number,
       required String ward_number,
-      required String user_id,
-      required DateTime inspection_time,
+      required List<dynamic> user_id,
+      required DateTime? inspection_time,
       required int color}) async {
     DocumentReference docRef = await patients.add({
       'name': name,
@@ -59,9 +85,22 @@ class PatientService {
     return patientsStream;
   }
 
+  // Stream<List<Map<String, dynamic>>> getPinhandStream(String uid) {
+  //   return patients // Replace with your actual collection reference
+  //       .where('user_id', isEqualTo: uid)
+  //       .snapshots()
+  //       .map((snapshot) => snapshot.docs
+  //           .map((doc) => {
+  //                 // Include existing data
+  //                 ...doc.data() as Map<String, dynamic>,
+  //                 // Add document ID
+  //                 'id': doc.id,
+  //               })
+  //           .toList());
+  // }
   Stream<List<Map<String, dynamic>>> getPinhandStream(String uid) {
     return patients // Replace with your actual collection reference
-        .where('user_id', isEqualTo: uid)
+        .where('user_id', arrayContains: uid)
         .snapshots()
         .map((snapshot) => snapshot.docs
             .map((doc) => {
@@ -71,6 +110,20 @@ class PatientService {
                   'id': doc.id,
                 })
             .toList());
+  }
+
+  Future<void> setPinterest(String patientID, String uid) {
+    return patients.doc(patientID).update({
+      'user_id': FieldValue.arrayUnion([uid]),
+      'timestamp': Timestamp.now()
+    });
+  }
+
+  Future<void> removePinterest(String patientID, String uid) {
+    return patients.doc(patientID).update({
+      'user_id': FieldValue.arrayRemove([uid]),
+      'timestamp': Timestamp.now()
+    });
   }
 
   Future<void> updatePatientColor({required String patientID, required int color
@@ -123,17 +176,17 @@ class PatientService {
     return patients.doc(patientID).update({'inspection_time': inspection_time});
   }
 
-  Future<void> setCareTaker(String patientID, String uid) {
-    return patients
-        .doc(patientID)
-        .update({'user_id': uid, 'timestamp': Timestamp.now()});
-  }
+  // Future<void> setCareTaker(String patientID, String uid) {
+  //   return patients
+  //       .doc(patientID)
+  //       .update({'user_id': uid, 'timestamp': Timestamp.now()});
+  // }
 
-  Future<void> removeCareTaker(String patientID, String uid) {
-    return patients
-        .doc(patientID)
-        .update({'user_id': "null", 'timestamp': Timestamp.now()});
-  }
+  // Future<void> removeCareTaker(String patientID, String uid) {
+  //   return patients
+  //       .doc(patientID)
+  //       .update({'user_id': "null", 'timestamp': Timestamp.now()});
+  // }
 
   Future<void> deletePatient(String patientID) {
     return patients.doc(patientID).delete();

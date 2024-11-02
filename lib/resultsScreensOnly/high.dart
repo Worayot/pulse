@@ -26,23 +26,7 @@ class HighPage extends StatelessWidget {
         child: Column(
           children: [
             Header(size, true),
-            SizedBox(height: size.height * 0.03),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  S.of(context)!.descriptionscoreUpdate,
-                  textAlign: TextAlign.right,
-                  style: GoogleFonts.inter(
-                    textStyle: TextStyle(
-                      fontSize: size.width * 0.033,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: size.height * 0.01),
+            SizedBox(height: size.height * 0.04),
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(

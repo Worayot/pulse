@@ -91,10 +91,10 @@ class _HomeScreenState extends State<HomeScreen> {
         'subtitle': S.of(context)!.swapShiftWithOtherNurse,
         'icon': FontAwesomeIcons.arrowsRotate,
         'onTap': () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => QrCodePage()),
-          );
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => QrCodePage()),
+          // );
         },
       },
     ];

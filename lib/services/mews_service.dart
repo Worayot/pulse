@@ -147,6 +147,23 @@ class MewsService {
             .toList());
   }
 
+  Future<List<Map<String, dynamic>>> getMewsData(String patientID) async {
+    try {
+      QuerySnapshot snapshot = await mews
+          .where('patient_id', isEqualTo: patientID)
+          .orderBy('timestamp', descending: true)
+          .get();
+
+      // Convert QuerySnapshot to List<Map<String, dynamic>>
+      return snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      print('Error fetching MEWS data: $e');
+      return []; // Return an empty list on error
+    }
+  }
+
   Stream<Map<String, dynamic>> getMewsStream2(String patientID) {
     return mews
         .where('patient_id', isEqualTo: patientID)

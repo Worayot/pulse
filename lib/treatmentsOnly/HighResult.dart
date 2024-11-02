@@ -50,21 +50,7 @@ class HighResultPage extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: size.height * 0.001),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                S.of(context)!.descriptionscoreUpdate,
-                textAlign: TextAlign.right,
-                style: GoogleFonts.inter(
-                  textStyle: TextStyle(
-                    fontSize: size.width * 0.029,
-                    color: Colors.black54,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: size.height * 0.005),
+            SizedBox(height: size.height * 0.006),
             Container(
               padding: EdgeInsets.all(size.width * 0.04),
               decoration: BoxDecoration(

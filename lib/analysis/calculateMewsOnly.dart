@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, unused_local_variable
 // Main class for the calculating MEWs page
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -159,8 +159,7 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
                         _buildInputSection(
                           order: '6.',
                           icon: FontAwesomeIcons.maskVentilator,
-                          title: '\t\t\t\t\t\t\t\t\t\tSpO2\n' +
-                              S.of(context)!.whileGivingOxygen,
+                          title: 'SpO2\n' + S.of(context)!.whileGivingOxygen,
                           controller: _spo2Controller,
                           color: const Color(0xff6D6D6D),
                         ),
@@ -180,57 +179,71 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
                         final String? levelOfConsciousness =
                             _consciousValue ?? '-';
 
-                        // Add these values to the database
-
-                        int MEWs = calculateMEWS(
-                          context: context,
-                          heartRateString: _pulseController.text,
-                          respiratoryRateString: _rrController.text,
-                          systolicBPString: _sysBpController.text,
-                          temperatureString: _tempController.text,
-                          levelOfConsciousness: levelOfConsciousness,
-                          oxygenSaturationString: _spo2Controller.text,
-                          urineOutputString: _urineController.text,
-                        ).last.toInt();
-
-                        if (MEWs <= 1) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LowPage(MEWs: MEWs)),
-                          );
-                        } else if (MEWs > 1 && MEWs <= 2) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    LowMediumPage(MEWs: MEWs)),
-                          );
-                        } else if (MEWs > 2 && MEWs <= 3) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => MediumPage(MEWs: MEWs)),
-                          );
-                        } else if ((MEWs > 3 && MEWs <= 4)) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    MediumHighPage(MEWs: MEWs)),
-                          );
-                        } else if (MEWs > 4) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HighPage(MEWs: MEWs)),
+                        if (_pulseController.text.contains('.') ||
+                            _rrController.text.contains('.') ||
+                            _sysBpController.text.contains('.') ||
+                            _diasBpController.text.contains('.') ||
+                            _spo2Controller.text.contains('.') ||
+                            _urineController.text.contains('.') ||
+                            _tempController.text == '.') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Invalid value"),
+                              duration: Duration(seconds: 1),
+                              backgroundColor: Colors.red,
+                            ),
                           );
                         } else {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => HighPage(MEWs: MEWs)),
-                          );
+                          int MEWs = calculateMEWS(
+                            context: context,
+                            heartRateString: _pulseController.text,
+                            respiratoryRateString: _rrController.text,
+                            systolicBPString: _sysBpController.text,
+                            temperatureString: _tempController.text,
+                            levelOfConsciousness: levelOfConsciousness,
+                            oxygenSaturationString: _spo2Controller.text,
+                            urineOutputString: _urineController.text,
+                          ).last.toInt();
+
+                          if (MEWs <= 1) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LowPage(MEWs: MEWs)),
+                            );
+                          } else if (MEWs > 1 && MEWs <= 2) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      LowMediumPage(MEWs: MEWs)),
+                            );
+                          } else if (MEWs > 2 && MEWs <= 3) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => MediumPage(MEWs: MEWs)),
+                            );
+                          } else if ((MEWs > 3 && MEWs <= 4)) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      MediumHighPage(MEWs: MEWs)),
+                            );
+                          } else if (MEWs > 4) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HighPage(MEWs: MEWs)),
+                            );
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HighPage(MEWs: MEWs)),
+                            );
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -283,7 +296,11 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
               FaIcon(icon, size: 45, color: color)
             ])),
         // FaIcon(icon, size: 40, color: color),
-        Text(title),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10),
+        ),
         const SizedBox(height: 10),
         Container(
           width: 100,
@@ -329,7 +346,11 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
               const SizedBox(width: 15),
               FaIcon(icon, size: 45, color: color)
             ])),
-        Text(title, textAlign: TextAlign.center),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10),
+        ),
         const SizedBox(height: 10),
         Container(
           width: 150,
@@ -391,67 +412,91 @@ class _CalculateMEWsOnlyState extends State<CalculateMEWsOnly> {
     required TextEditingController sysController,
     required TextEditingController diasController,
   }) {
+    // FocusNodes to manage focus between text fields
+    final FocusNode sysFocusNode = FocusNode();
+    final FocusNode diasFocusNode = FocusNode();
+
+    // Adding a listener to the sysController
+    sysController.addListener(() {
+      if (sysController.text.length == 3) {
+        // Move focus to the diastolic input field
+        diasFocusNode.requestFocus();
+      }
+    });
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-            padding: EdgeInsets.only(right: 25.0),
-            child: Row(children: [
-              Text(order,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  )),
-              const SizedBox(width: 15),
-              FaIcon(icon, size: 40, color: Colors.red)
-            ])),
-        Text(title),
+          padding: EdgeInsets.only(right: 25.0),
+          child: Row(children: [
+            Text(
+              order,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 15),
+            FaIcon(icon, size: 40, color: Colors.red),
+          ]),
+        ),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10),
+        ),
         const SizedBox(height: 10),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: const Color(0xffFFDDEC),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: TextField(
-              controller: sysController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10),
-                hintText: '-',
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: const Color(0xffFFDDEC),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: TextField(
+                controller: sysController,
+                focusNode: sysFocusNode, // Assign sysFocusNode to this field
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(10),
+                  hintText: '-',
+                ),
               ),
             ),
-          ),
-          SizedBox(width: 4),
-          Text(
-            '/',
-            style: TextStyle(fontSize: 20),
-          ),
-          SizedBox(width: 4),
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: const Color(0xffFFDDEC),
-              borderRadius: BorderRadius.circular(15),
+            SizedBox(width: 4),
+            Text(
+              '/',
+              style: TextStyle(fontSize: 20),
             ),
-            child: TextField(
-              controller: diasController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10),
-                hintText: '-',
+            SizedBox(width: 4),
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: const Color(0xffFFDDEC),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: TextField(
+                controller: diasController,
+                focusNode: diasFocusNode, // Assign diasFocusNode to this field
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(10),
+                  hintText: '-',
+                ),
               ),
             ),
-          ),
-        ])
+          ],
+        ),
       ],
     );
   }

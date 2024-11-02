@@ -189,8 +189,7 @@ class _CalculateMEWsAndUpdateScreenState
                         _buildInputSection(
                           order: '6.',
                           icon: FontAwesomeIcons.maskVentilator,
-                          title: '\t\t\t\t\t\t\t\t\t\tSpO2\n' +
-                              S.of(context)!.whileGivingOxygen,
+                          title: 'SpO2\n' + S.of(context)!.whileGivingOxygen,
                           controller: _spo2Controller,
                           color: const Color(0xff6D6D6D),
                         ),
@@ -227,92 +226,109 @@ class _CalculateMEWsAndUpdateScreenState
                         String consciousnessValue = getEnglishConsciousValue(
                             context, levelOfConsciousness);
 
-                        int MEWs = calculateMEWS(
-                          context: context,
-                          heartRateString: _pulseController.text,
-                          respiratoryRateString: _rrController.text,
-                          systolicBPString: _sysBpController.text,
-                          temperatureString: _tempController.text,
-                          levelOfConsciousness: consciousnessValue,
-                          oxygenSaturationString: _spo2Controller.text,
-                          urineOutputString: _urineController.text,
-                        ).last.toInt();
+                        if (_pulseController.text.contains('.') ||
+                            _rrController.text.contains('.') ||
+                            _sysBpController.text.contains('.') ||
+                            _diasBpController.text.contains('.') ||
+                            _spo2Controller.text.contains('.') ||
+                            _urineController.text.contains('.') ||
+                            _tempController.text == '.') {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("Invalid value"),
+                              duration: Duration(seconds: 1),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        } else {
+                          int MEWs = calculateMEWS(
+                            context: context,
+                            heartRateString: _pulseController.text,
+                            respiratoryRateString: _rrController.text,
+                            systolicBPString: _sysBpController.text,
+                            temperatureString: _tempController.text,
+                            levelOfConsciousness: consciousnessValue,
+                            oxygenSaturationString: _spo2Controller.text,
+                            urineOutputString: _urineController.text,
+                          ).last.toInt();
 
-                        // Add the patient to the database after navigating
-                        Future.delayed(Duration(milliseconds: 500), () async {
-                          try {
-                            await _patientService.updatePatientData(
-                                name: widget.name,
-                                lastname: widget.surname,
-                                gender: widget.gender,
-                                hospital_number: widget.hn.toString(),
-                                bed_number: widget.bedNum.toString(),
-                                ward_number: widget.ward,
-                                patientID: widget.patientID,
-                                inspection_time: DateTime.now());
+                          // Add the patient to the database after navigating
+                          Future.delayed(Duration(milliseconds: 500), () async {
+                            try {
+                              await _patientService.updatePatientData(
+                                  name: widget.name,
+                                  lastname: widget.surname,
+                                  gender: widget.gender,
+                                  hospital_number: widget.hn.toString(),
+                                  bed_number: widget.bedNum.toString(),
+                                  ward_number: widget.ward,
+                                  patientID: widget.patientID,
+                                  inspection_time: DateTime.now());
 
-                            String bloodPressure = formatBloodPressure(
-                                systolicBP ?? null, diastolicBP ?? null);
+                              String bloodPressure = formatBloodPressure(
+                                  systolicBP ?? null, diastolicBP ?? null);
 
-                            MewsService.addMEWsToPatient(
-                                blood_pressure: bloodPressure,
-                                consciousness: consciousnessValue,
-                                heart_rate: heartRate ?? null,
-                                mews_score: MEWs,
-                                oxygen_saturation: oxygenSaturation ?? null,
-                                temperature: temperature ?? null,
-                                urine: urineOutput ?? null,
-                                respiratory_rate: respiratoryRate ?? null,
-                                uid: uid,
-                                patient_id: widget.patientID);
+                              MewsService.addMEWsToPatient(
+                                  blood_pressure: bloodPressure,
+                                  consciousness: consciousnessValue,
+                                  heart_rate: heartRate ?? null,
+                                  mews_score: MEWs,
+                                  oxygen_saturation: oxygenSaturation ?? null,
+                                  temperature: temperature ?? null,
+                                  urine: urineOutput ?? null,
+                                  respiratory_rate: respiratoryRate ?? null,
+                                  uid: uid,
+                                  patient_id: widget.patientID);
 
-                            Widget resultsPage;
+                              Widget resultsPage;
 
-                            if (MEWs <= 1) {
-                              resultsPage = LowPage(
-                                MEWs: MEWs,
-                                patientID: widget.patientID,
+                              if (MEWs <= 1) {
+                                resultsPage = LowPage(
+                                  MEWs: MEWs,
+                                  patientID: widget.patientID,
+                                );
+                              } else if (MEWs > 1 && MEWs <= 2) {
+                                resultsPage = LowMediumPage(
+                                    MEWs: MEWs, patientID: widget.patientID);
+                              } else if (MEWs > 2 && MEWs <= 3) {
+                                resultsPage = MediumPage(
+                                    MEWs: MEWs, patientID: widget.patientID);
+                              } else if (MEWs > 3 && MEWs <= 4) {
+                                resultsPage = MediumHighPage(
+                                    MEWs: MEWs, patientID: widget.patientID);
+                              } else {
+                                resultsPage = HighPage(
+                                    MEWs: MEWs, patientID: widget.patientID);
+                              }
+
+                              await _patientService.updatePatientColor(
+                                  color: MEWs, patientID: widget.patientID);
+
+                              DateTime inspection_time =
+                                  await getInspectionTime(
+                                      widget.patientID, MEWs);
+
+                              _patientService.setInspectionTime(
+                                  widget.patientID, inspection_time);
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(S.of(context)!.calSuccess),
+                                  duration: Duration(seconds: 1),
+                                  backgroundColor: Colors.green,
+                                ),
                               );
-                            } else if (MEWs > 1 && MEWs <= 2) {
-                              resultsPage = LowMediumPage(
-                                  MEWs: MEWs, patientID: widget.patientID);
-                            } else if (MEWs > 2 && MEWs <= 3) {
-                              resultsPage = MediumPage(
-                                  MEWs: MEWs, patientID: widget.patientID);
-                            } else if (MEWs > 3 && MEWs <= 4) {
-                              resultsPage = MediumHighPage(
-                                  MEWs: MEWs, patientID: widget.patientID);
-                            } else {
-                              resultsPage = HighPage(
-                                  MEWs: MEWs, patientID: widget.patientID);
+                              // Navigate to the results page
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => resultsPage),
+                              );
+                            } catch (error) {
+                              print('Error adding patient: $error');
                             }
-
-                            await _patientService.updatePatientColor(
-                                color: MEWs, patientID: widget.patientID);
-
-                            DateTime inspection_time =
-                                await getInspectionTime(widget.patientID, MEWs);
-
-                            _patientService.setInspectionTime(
-                                widget.patientID, inspection_time);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(S.of(context)!.calSuccess),
-                                duration: Duration(seconds: 1),
-                                backgroundColor: Colors.green,
-                              ),
-                            );
-                            // Navigate to the results page
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => resultsPage),
-                            );
-                          } catch (error) {
-                            print('Error adding patient: $error');
-                          }
-                        });
+                          });
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xffFFB2B2),
@@ -363,7 +379,11 @@ class _CalculateMEWsAndUpdateScreenState
               const SizedBox(width: 15),
               FaIcon(icon, size: 45, color: color)
             ])),
-        Text(title),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10),
+        ),
         const SizedBox(height: 10),
         Container(
           width: 100,
@@ -374,7 +394,7 @@ class _CalculateMEWsAndUpdateScreenState
           ),
           child: TextField(
             controller: controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10),
@@ -409,7 +429,11 @@ class _CalculateMEWsAndUpdateScreenState
               const SizedBox(width: 15),
               FaIcon(icon, size: 45, color: color)
             ])),
-        Text(title, textAlign: TextAlign.center),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10),
+        ),
         const SizedBox(height: 10),
         Container(
           width: 150,
@@ -471,67 +495,91 @@ class _CalculateMEWsAndUpdateScreenState
     required TextEditingController sysController,
     required TextEditingController diasController,
   }) {
+    // FocusNodes to manage focus between text fields
+    final FocusNode sysFocusNode = FocusNode();
+    final FocusNode diasFocusNode = FocusNode();
+
+    // Adding a listener to the sysController
+    sysController.addListener(() {
+      if (sysController.text.length == 3) {
+        // Move focus to the diastolic input field
+        diasFocusNode.requestFocus();
+      }
+    });
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Padding(
-            padding: EdgeInsets.only(right: 25.0),
-            child: Row(children: [
-              Text(order,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  )),
-              const SizedBox(width: 15),
-              FaIcon(icon, size: 40, color: Colors.red)
-            ])),
-        Text(title),
+          padding: EdgeInsets.only(right: 25.0),
+          child: Row(children: [
+            Text(
+              order,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 15),
+            FaIcon(icon, size: 40, color: Colors.red),
+          ]),
+        ),
+        Text(
+          title,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 10),
+        ),
         const SizedBox(height: 10),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: const Color(0xffFFDDEC),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: TextField(
-              controller: sysController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10),
-                hintText: '-',
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: const Color(0xffFFDDEC),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: TextField(
+                controller: sysController,
+                focusNode: sysFocusNode, // Assign sysFocusNode to this field
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(10),
+                  hintText: '-',
+                ),
               ),
             ),
-          ),
-          SizedBox(width: 4),
-          Text(
-            '/',
-            style: TextStyle(fontSize: 20),
-          ),
-          SizedBox(width: 4),
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              color: const Color(0xffFFDDEC),
-              borderRadius: BorderRadius.circular(15),
+            SizedBox(width: 4),
+            Text(
+              '/',
+              style: TextStyle(fontSize: 20),
             ),
-            child: TextField(
-              controller: diasController,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.all(10),
-                hintText: '-',
+            SizedBox(width: 4),
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: const Color(0xffFFDDEC),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: TextField(
+                controller: diasController,
+                focusNode: diasFocusNode, // Assign diasFocusNode to this field
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(10),
+                  hintText: '-',
+                ),
               ),
             ),
-          ),
-        ])
+          ],
+        ),
       ],
     );
   }

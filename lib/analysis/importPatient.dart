@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -73,8 +74,8 @@ class _ImportPatientState extends State<ImportPatient> {
               },
             ),
             SizedBox(height: size.height * 0.03),
-            StreamBuilder<List<Map<String, dynamic>>>(
-              stream: patientService.getNotInCarePatient(),
+            StreamBuilder<QuerySnapshot>(
+              stream: patientService.getPatientStream(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
@@ -85,12 +86,22 @@ class _ImportPatientState extends State<ImportPatient> {
                 }
 
                 if (snapshot.hasData) {
+                  final patients = snapshot.data!.docs;
+
                   // Filter the data based on the search query
-                  final data = snapshot.data!.where((patient) {
+                  final data = patients.where((doc) {
+                    final patient = doc.data() as Map<String, dynamic>;
                     final fullName = '${patient['name']} ${patient['lastname']}'
                         .toLowerCase();
-                    return fullName.contains(_searchQuery);
+                    return fullName.contains(_searchQuery.toLowerCase());
                   }).toList();
+
+                  // Sort the data alphabetically by full name
+                  data.sort((a, b) {
+                    final nameA = '${a['name']} ${a['lastname']}'.toLowerCase();
+                    final nameB = '${b['name']} ${b['lastname']}'.toLowerCase();
+                    return nameA.compareTo(nameB); // Ascending order
+                  });
 
                   if (data.isEmpty) {
                     return Center(child: Text('No patients found.'));
@@ -106,6 +117,10 @@ class _ImportPatientState extends State<ImportPatient> {
                     child: ListView.builder(
                       itemCount: data.length,
                       itemBuilder: (context, index) {
+                        // Retrieve the DocumentSnapshot from the sorted `data` list
+                        DocumentSnapshot document = data[index];
+                        String patientsID = document.id;
+
                         return Container(
                           margin: const EdgeInsets.symmetric(
                               horizontal: 2, vertical: 10),
@@ -134,23 +149,22 @@ class _ImportPatientState extends State<ImportPatient> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () async {
-                                    // Show SnackBar when adding a patient to care
+                                  onPressed: () {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         content: Text(
                                           '${S.of(context)!.added} ${data[index]['name']} ${data[index]['lastname']} ${S.of(context)!.intoYourCare}',
                                         ),
-                                        duration: const Duration(seconds: 2),
+                                        backgroundColor: Colors.green,
+                                        duration: const Duration(seconds: 1),
                                       ),
                                     );
 
-                                    // Retrieve user ID and set the caretaker
                                     final uid = FirebaseAuth
                                         .instance.currentUser!.uid
                                         .toString();
-                                    await patientService.setCareTaker(
-                                        data[index]['id'], uid);
+                                    patientService.setPinterest(
+                                        patientsID, uid);
                                   },
                                   icon: FaIcon(
                                     FontAwesomeIcons.circlePlus,
@@ -168,7 +182,7 @@ class _ImportPatientState extends State<ImportPatient> {
                   return Container(child: Text('There is no patient.'));
                 }
               },
-            ),
+            )
           ],
         ),
       ),

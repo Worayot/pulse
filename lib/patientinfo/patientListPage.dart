@@ -123,7 +123,13 @@ class _PatientlistpageState extends State<Patientlistpage> {
                             String patientText =
                                 '${data['name']} ${data['lastname']}';
                             String patientDescription =
-                                '${S.of(context)!.textBedNum}: ${data['bed_number']}\n${DateFormat('dd/MM/yyyy hh:mm:ss').format((data['timestamp'] as Timestamp).toDate())}';
+                                '${S.of(context)!.textBedNum}: ${data['bed_number']}\n' +
+                                    (data['inspection_time'] != null
+                                        ? DateFormat('dd/MM/yyyy hh:mm:ss')
+                                            .format((data['inspection_time']
+                                                    as Timestamp)
+                                                .toDate())
+                                        : '');
                             return ListTile(
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
